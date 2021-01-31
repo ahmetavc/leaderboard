@@ -1,0 +1,23 @@
+{
+  "name": "leaderboard",
+  "version": "1.0.0",
+  "description": "leaderboard case",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahmetavc/leaderboard.git"
+  },
+  "author": "Ahmet Avci",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahmetavc/leaderboard/issues"
+  },
+  "homepage": "https://github.com/ahmetavc/leaderboard#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "type": "module"
+}

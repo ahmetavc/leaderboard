@@ -18,7 +18,22 @@
   },
   "homepage": "https://github.com/ahmetavc/leaderboard#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.9.2",
+    "lodash": "^4.17.20",
+    "pg": "^8.5.1",
+    "pg-pool": "^3.2.2",
+    "prettier": "^2.2.1",
+    "redis": "^3.0.2",
+    "url": "^0.11.0",
+    "url-parse": "^1.4.7",
+    "uuid": "^8.3.2",
+    "whatwg-url": "^8.4.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^14.14.22"
+  }
 }

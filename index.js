@@ -10,6 +10,8 @@ app.use("/user", userRouter);
 app.use("/score", scoreRouter);
 app.use("/leaderboard", leaderboardRouter);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+server.setTimeout(10000 * 1000);

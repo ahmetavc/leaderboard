@@ -21,6 +21,7 @@ export const submit = async (
     country = res.rows[0].country;
     currentScore = res.rows[0].score;
 
+    currentScore = parseFloat(currentScore);
     score = parseFloat(score);
   } catch (e) {
     return e;

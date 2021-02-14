@@ -32,7 +32,7 @@ export const getLeaderboardByCountry = async (
   promisifiedRedis,
   pgPool,
   country,
-  range = 10
+  range = 9
 ) => {
   const client = await pgPool.connect();
 

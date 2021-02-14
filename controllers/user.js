@@ -1,3 +1,6 @@
+import { countries } from "../iso_codes.js";
+import { v4 as uuidv4 } from "uuid";
+
 export const createUser = async (promisifiedRedis, pgPool, newUser) => {
   const client = await pgPool.connect();
 
@@ -61,3 +64,42 @@ export const getUser = async (promisifiedRedis, pgPool, userID) => {
 
   return user;
 };
+
+export const createBulkOfUsers = async (promisifiedRedis, pgPool, count) => {
+  const isoLength = countries.length;
+
+  const result = {};
+  result.successfulyCreatedUserCount = 0;
+  result.newUserIDs = [];
+
+  for (let i = 0; i < count; i++) {
+    const randomCountryIndex = getRandomInt(isoLength);
+    const newUser = {};
+    const now = new Date();
+
+    newUser.country = countries[randomCountryIndex];
+    newUser.ID = uuidv4();
+    newUser.display_name = newUser.ID;
+    newUser.score = getRandomInt(1000000);
+    newUser.created_at = now;
+    newUser.last_modified = now;
+
+    const createdUser = await createUser(promisifiedRedis, pgPool, newUser);
+
+    const err = createdUser[1];
+
+    if (err) {
+      console.log("an error occurred while creating new random user: ", err);
+      continue;
+    }
+
+    result.successfulyCreatedUserCount += 1;
+    result.newUserIDs.push(newUser.ID);
+  }
+
+  return result;
+};
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}

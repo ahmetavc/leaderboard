@@ -34,6 +34,7 @@ leaderboardRouter.get(
   async function (req, res) {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log("an error occurred in leaderboard/country endpoint: ", err);
       return res.status(422).json({ errors: errors.array() });
     }
 

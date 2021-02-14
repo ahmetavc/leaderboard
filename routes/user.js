@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import expressValidator from "express-validator";
 import * as pg from "../db/pg.js";
 import * as redis from "../db/redis.js";
-import { createUser, getUser } from "../controllers/user.js";
+import { createBulkOfUsers, createUser, getUser } from "../controllers/user.js";
 
 const { body, validationResult, param } = expressValidator;
 const { json } = bodyParser;
@@ -38,7 +38,7 @@ userRouter.get(
 userRouter.post(
   "/create",
   body("country").isLength({
-    min: 1,
+    min: 2,
     max: 3,
   }),
   body("display_name").isLength({ min: 3 }),
@@ -76,7 +76,15 @@ userRouter.post(
   }
 );
 
-// insert bulk of users with random scores
-// router.post("/bulk", function (req, res) {
-//   const userID = uuidv4();
-// });
+// insert bulk of users with random scores and country
+userRouter.post("/bulk", body("count").isInt(), async function (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const count = req.body.count;
+  const result = await createBulkOfUsers(promisifiedRedis, pgPool, count);
+
+  return res.json(result);
+});

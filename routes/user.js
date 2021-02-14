@@ -1,48 +1,41 @@
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
-import { validate as uuidValidate } from "uuid";
 import bodyParser from "body-parser";
 import expressValidator from "express-validator";
 import * as pg from "../db/pg.js";
 import * as redis from "../db/redis.js";
-import util from "util";
-import { createUser, getUser } from "../application/user.js";
+import { createUser, getUser } from "../controllers/user.js";
 
-const { body, validationResult, query } = expressValidator;
+const { body, validationResult, param } = expressValidator;
 const { json } = bodyParser;
-const { promisify } = util;
 
 redis.init();
-const redisClient = redis.getClients().cacheInstance;
-const promisifiedRedis = {
-  zadd: promisify(redisClient.zadd).bind(redisClient),
-  hexists: promisify(redisClient.hexists).bind(redisClient),
-  hset: promisify(redisClient.hset).bind(redisClient),
-  hget: promisify(redisClient.hget).bind(redisClient),
-  zrank: promisify(redisClient.zrank).bind(redisClient),
-  zrem: promisify(redisClient.zrem).bind(redisClient),
-};
-
 pg.init();
-const pgPool = pg.getClients().pool;
 
-export var router = express.Router();
-router.use(json());
+const promisifiedRedis = redis.getClient();
+const pgPool = pg.getClient();
 
-router.get("/profile/:user_id", async function (req, res) {
-  // const errors = validationResult(req);
-  // if (!errors.isEmpty()) {
-  //   return res.status(422).json({ errors: errors.array() });
-  // }
+export var userRouter = express.Router();
+userRouter.use(json());
 
-  const userID = req.params["user_id"];
+userRouter.get(
+  "/profile/:user_id",
+  param("user_id").isUUID(),
+  async function (req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
 
-  const user = await getUser(promisifiedRedis, pgPool, userID);
+    const userID = req.params["user_id"];
 
-  return res.json(user);
-});
+    const user = await getUser(promisifiedRedis, pgPool, userID);
 
-router.post(
+    return res.json(user);
+  }
+);
+
+userRouter.post(
   "/create",
   body("country").isLength({
     min: 1,

@@ -1,11 +1,15 @@
 import express from "express";
-import {router} from './routes/user.js'
+import { userRouter } from "./routes/user.js";
+import { scoreRouter } from "./routes/score.js";
+import { leaderboardRouter } from "./routes/leaderboard.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use('/user', router);
+app.use("/user", userRouter);
+app.use("/score", scoreRouter);
+app.use("/leaderboard", leaderboardRouter);
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

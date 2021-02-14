@@ -1,18 +1,30 @@
 import redis from "redis";
-import _ from "lodash";
-import Promise from "bluebird";
+import util from "util";
+const { promisify } = util;
 
-const clients = {};
+let redisClient;
 let connectionTimeout;
 
 export const init = () => {
-  console.log("ENV VARIABLE: ", process.env.REDISCLOUD_URL);
-  const cacheInstance = redis.createClient(process.env.REDISCLOUD_URL);
-  clients.cacheInstance = cacheInstance;
-  instanceEventListeners({ conn: cacheInstance });
+  if (!redisClient) {
+    console.log("ENV VARIABLE: ", process.env.REDISCLOUD_URL);
+    redisClient = redis.createClient(process.env.REDISCLOUD_URL);
+    instanceEventListeners({ conn: redisClient });
+
+    redisClient = {
+      zadd: promisify(redisClient.zadd).bind(redisClient),
+      hexists: promisify(redisClient.hexists).bind(redisClient),
+      hset: promisify(redisClient.hset).bind(redisClient),
+      hget: promisify(redisClient.hget).bind(redisClient),
+      zrevrank: promisify(redisClient.zrevrank).bind(redisClient),
+      zrem: promisify(redisClient.zrem).bind(redisClient),
+      zscore: promisify(redisClient.zscore).bind(redisClient),
+      flushdb: promisify(redisClient.flushdb).bind(redisClient),
+      zrevrange: promisify(redisClient.zrevrange).bind(redisClient),
+    };
+  }
 };
-export const getClients = () => clients;
-export const closeConnections = () => _.forOwn(clients, (conn) => conn.quit());
+export const getClient = () => redisClient;
 
 function throwTimeoutError() {
   connectionTimeout = setTimeout(() => {

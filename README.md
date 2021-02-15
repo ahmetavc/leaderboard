@@ -2,6 +2,8 @@
 
 This api collect user data and creates leaderboard.
 
+It is currenlty deployed on heroku free tier.
+
 Postman docs can be found here -> https://documenter.getpostman.com/view/3718926/TWDTLJLk
 
 ## Implementation

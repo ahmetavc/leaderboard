@@ -1,4 +1,4 @@
-export const getLeaderboard = async (promisifiedRedis, pgPool, range = 10) => {
+export const getLeaderboard = async (promisifiedRedis, pgPool, range = 9) => {
   const client = await pgPool.connect();
 
   const leaderboardWithIDs = await promisifiedRedis.zrevrange(
